@@ -1,0 +1,4 @@
+#!/bin/bash
+
+#REV=`git rev-parse --short HEAD`
+IMGNAME=baoqu/dev
