@@ -1,4 +1,61 @@
 #!/bin/bash
+set -e
 
-#REV=`git rev-parse --short HEAD`
+REV=`git rev-parse --short HEAD`
 IMGNAME=baoqu/dev
+
+# COLORS
+BOLD="\e[1m"
+RESET="\e[0m"
+
+function check_and_download_repositories {
+    if [[ ! -d baoqu-front ]]; then
+        echo -e "=> Downloading ${BOLD}front${RESET} repository"
+        git clone git@github.com:baoqu/baoqu-front.git
+    fi
+
+    if [[ ! -d baoqu-back ]]; then
+        echo -e "=> Downloading ${BOLD}back${RESET} repository"
+        git clone git@github.com:baoqu/baoqu-back.git
+    fi
+}
+
+function clean_docker_images {
+    OLD_IMAGES=`docker images | grep $IMGNAME | awk '{ print $3 }'`
+
+    if [[ -n $OLD_IMAGES ]]; then
+        echo -e "=> Cleaning ${BOLD}old docker images${RESET}"
+        docker rmi -f $OLD_IMAGES
+    fi
+}
+
+function update_docker {
+    echo -e "=> Creating ${BOLD}new docker image${RESET}"
+    docker build --rm=true -t $IMGNAME:$REV .
+}
+
+function check_docker_image_exists {
+    docker images | grep $IMGNAME | grep $REV
+}
+
+function keep_docker_image_updated {
+    if [[ -z `check_docker_image_exists` ]]; then
+        clean_docker_images
+        update_docker
+    fi
+}
+
+function run_development_environment {
+    docker run -it \
+           -v `pwd`/baoqu-back:/home/user/app-back \
+           -v `pwd`/baoqu-front:/home/user/app-front \
+           -v $HOME/.lein:/home/user/.lein \
+           -v $HOME/.m2:/home/user/.m2 \
+           -p 3449:3449 \
+           -p 5050:5050 \
+           $IMGNAME:$REV
+}
+
+check_and_download_repositories
+keep_docker_image_updated
+run_development_environment
