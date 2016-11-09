@@ -5,12 +5,12 @@ tmux -2 new-session -d -s baoqu
 tmux new-window -t baoqu:1 -n 'front'
 tmux select-window -t baoqu:1
 tmux send-keys -t baoqu 'cd app-front' C-m
-tmux send-keys -t baoqu './scripts/figwheel' C-m
+tmux send-keys -t baoqu 'rlwrap lein figwheel' C-m
 
-tmux new-window -t baoqu:2 -n 'back'
+tmux new-window -t baoqu:2 -n 'core'
 tmux select-window -t baoqu:2
-tmux send-keys -t baoqu 'cd app-back' C-m
-tmux send-keys -t baoqu 'lein run' C-m
+tmux send-keys -t baoqu 'cd app-core' C-m
+tmux send-keys -t baoqu 'lein srv' C-m
 
 tmux rename-window -t baoqu:0 'layout'
 tmux select-window -t baoqu:0

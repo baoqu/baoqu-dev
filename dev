@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 
 REV=`git rev-parse --short HEAD`
@@ -14,9 +14,9 @@ function check_and_download_repositories {
         git clone git@github.com:baoqu/baoqu-front.git
     fi
 
-    if [[ ! -d baoqu-back ]]; then
-        echo -e "=> Downloading ${BOLD}back${RESET} repository"
-        git clone git@github.com:baoqu/baoqu-back.git
+    if [[ ! -d baoqu-core ]]; then
+        echo -e "=> Downloading ${BOLD}core${RESET} repository"
+        git clone git@github.com:baoqu/baoqu-core.git
     fi
 }
 
@@ -47,7 +47,7 @@ function keep_docker_image_updated {
 
 function run_development_environment {
     docker run -it \
-           -v `pwd`/baoqu-back:/home/user/app-back \
+           -v `pwd`/baoqu-core:/home/user/app-core \
            -v `pwd`/baoqu-front:/home/user/app-front \
            -v $HOME/.lein:/home/user/.lein \
            -v $HOME/.m2:/home/user/.m2 \
