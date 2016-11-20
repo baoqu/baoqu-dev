@@ -19,7 +19,8 @@ RUN apt-get update && apt-get install -yq \
                                       vim \
                                       xz-utils \
                                       curl \
-                                      rlwrap
+                                      rlwrap \
+                                      sqlite3
 
 # Install lein
 ENV LEIN_ROOT 1
